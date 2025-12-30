@@ -44,8 +44,7 @@ export default async function handler(req, res) {
 
     // Determine webhook URL based on upload type
     const STATEMENT_WEBHOOK = 'https://hook.us2.make.com/eok25ucrxrlx3tj82rby58dxxt10qo';
-    const TRANSACTION_WEBHOOK = 'https://hook.us2.make.com/xxlrqohm3edmerdjznm1c9pb49w';
-    
+const TRANSACTION_WEBHOOK = 'https://hook.us2.make.com/xxlrqohm3edmerdjznmi1c9pb49wevgg';    
     const webhookUrl = uploadType === 'statement' ? STATEMENT_WEBHOOK : TRANSACTION_WEBHOOK;
 
     // Get the uploaded file
