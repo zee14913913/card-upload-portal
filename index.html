@@ -5,128 +5,303 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Card Upload Portal</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #f5f5f5;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
-        }
-        select, input[type="text"], input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #2d3561 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(100, 150, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(150, 100, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .container {
+            background: rgba(20, 25, 45, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 48px;
+            max-width: 520px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .logo {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        h1 {
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 15px;
+            margin-bottom: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        label {
+            display: block;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            letter-spacing: 0.2px;
+        }
+        
+        select,
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        select:hover,
+        input[type="text"]:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        select:focus,
+        input[type="text"]:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+        
+        select option {
+            background: #1a1f3a;
+            color: #ffffff;
+        }
+        
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .file-upload {
+            position: relative;
+            display: block;
+        }
+        
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+        
+        .file-upload-label:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .file-upload input[type="file"] {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        .file-name {
+            margin-top: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            text-align: center;
+        }
+        
         button {
             width: 100%;
-            padding: 12px;
-            background: #4CAF50;
-            color: white;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
-            border-radius: 4px;
+            border-radius: 12px;
+            color: white;
             font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 32px;
+            letter-spacing: 0.3px;
         }
+        
         button:hover {
-            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.3);
         }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
         button:disabled {
-            background: #ccc;
+            opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
         }
+        
         #status {
             margin-top: 20px;
-            padding: 15px;
-            border-radius: 4px;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            text-align: center;
             display: none;
         }
-        .success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+        
+        #status.success {
+            background: rgba(52, 211, 153, 0.1);
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            color: #34d399;
+            display: block;
         }
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
+        
+        #status.error {
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            color: #f87171;
+            display: block;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Card Upload Portal</h1>
+        <div class="logo">C</div>
+        <h1>Upload Card Document</h1>
+        <p class="subtitle">Automatically extract and process your card statements or transactions</p>
+        
         <form id="uploadForm">
             <div class="form-group">
-                <label for="uploadType">Upload Type:</label>
+                <label for="uploadType">Document Type</label>
                 <select id="uploadType" required>
-                    <option value="">Select Type</option>
-                    <option value="statement">Credit Card Statement</option>
-                    <option value="transaction">Single Transaction</option>
+                    <option value="">Select type</option>
+                    <option value="statement">Card Statement</option>
+                    <option value="transaction">Transaction Record</option>
                 </select>
             </div>
             
             <div class="form-group">
-                <label for="clientName">Client Name:</label>
-                <input type="text" id="clientName" required placeholder="Enter client name">
+                <label for="clientName">Client Name</label>
+                <input type="text" id="clientName" placeholder="Enter client name" required>
             </div>
             
-            <div class="form-group" id="paymentByGroup" style="display:none">
-                <label for="paymentBy">Payment By:</label>
+            <div class="form-group" id="paymentByGroup" style="display: none;">
+                <label for="paymentBy">Payment Method</label>
                 <select id="paymentBy">
-                    <option value="">Select Payment Method</option>
-                    <option value="Credit Card">Credit Card</option>
-                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="">Select payment method</option>
                     <option value="Cash">Cash</option>
-                    <option value="Other">Other</option>
+                    <option value="Card">Card</option>
+                    <option value="Transfer">Transfer</option>
+                    <option value="E-Wallet">E-Wallet</option>
                 </select>
             </div>
             
             <div class="form-group">
-                <label for="fileInput">Upload File (PDF/JPG/PNG):</label>
-                <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" required>
+                <label>Upload File (PDF/JPG/PNG)</label>
+                <div class="file-upload">
+                    <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" required>
+                    <label for="fileInput" class="file-upload-label">
+                        📎 Choose file or drag here
+                    </label>
+                    <div class="file-name" id="fileName"></div>
+                </div>
             </div>
             
-            <button type="submit" id="submitBtn">Upload</button>
+            <button type="submit">Upload & Process</button>
         </form>
         
         <div id="status"></div>
     </div>
-
+    
     <script>
         const STATEMENT_WEBHOOK_URL = 'https://hook.us2.make.com/eok25ucrxrlx3tj82rby58dxxt10qo';
         const TRANSACTION_WEBHOOK_URL = 'https://hook.us2.make.com/xxlrqohm3edmerdj znm1fc9pb49w';
         
         const uploadTypeSelect = document.getElementById('uploadType');
         const paymentByGroup = document.getElementById('paymentByGroup');
-        const uploadForm = document.getElementById('uploadForm');
+        const fileInput = document.getElementById('fileInput');
+        const fileNameDisplay = document.getElementById('fileName');
+        const form = document.getElementById('uploadForm');
         const statusDiv = document.getElementById('status');
-        const submitBtn = document.getElementById('submitBtn');
         
         uploadTypeSelect.addEventListener('change', function() {
             if (this.value === 'transaction') {
@@ -138,13 +313,20 @@
             }
         });
         
-        uploadForm.addEventListener('submit', async function(e) {
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                fileNameDisplay.textContent = '✓ ' + this.files[0].name;
+            } else {
+                fileNameDisplay.textContent = '';
+            }
+        });
+        
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const uploadType = document.getElementById('uploadType').value;
             const clientName = document.getElementById('clientName').value;
             const paymentBy = document.getElementById('paymentBy').value;
-            const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
             
             if (!file) {
@@ -152,52 +334,49 @@
                 return;
             }
             
-            showStatus('Uploading...', 'info');
-            submitBtn.disabled = true;
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('clientName', clientName);
+            
+            if (uploadType === 'transaction') {
+                formData.append('recordType', 'Transaction');
+                formData.append('paymentBy', paymentBy);
+            }
+            
+            const webhookUrl = uploadType === 'statement' ? STATEMENT_WEBHOOK_URL : TRANSACTION_WEBHOOK_URL;
+            
+            const submitButton = form.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Processing...';
             
             try {
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('clientName', clientName);
-                
-                let webhookUrl;
-                if (uploadType === 'statement') {
-                    webhookUrl = STATEMENT_WEBHOOK_URL;
-                } else if (uploadType === 'transaction') {
-                    webhookUrl = TRANSACTION_WEBHOOK_URL;
-                    formData.append('recordType', 'transaction');
-                    formData.append('paymentBy', paymentBy);
-                }
-                
                 const response = await fetch(webhookUrl, {
-                    method: 'POST',
-                    body: formData
+                    method: 'POST',n                    body: formData
                 });
                 
                 if (response.ok) {
-                    showStatus('Upload successful!', 'success');
-                    uploadForm.reset();
+                    showStatus('✓ Document uploaded and processing started!', 'success');
+                    form.reset();
+                    fileNameDisplay.textContent = '';
                     paymentByGroup.style.display = 'none';
                 } else {
-                    showStatus('Upload failed: ' + response.statusText, 'error');
+                    showStatus('Upload failed. Please try again.', 'error');
                 }
             } catch (error) {
-                showStatus('Error: ' + error.message, 'error');
+                showStatus('Network error. Please check your connection.', 'error');
             } finally {
-                submitBtn.disabled = false;
+                submitButton.disabled = false;
+                submitButton.textContent = 'Upload & Process';
             }
         });
         
         function showStatus(message, type) {
             statusDiv.textContent = message;
             statusDiv.className = type;
-            statusDiv.style.display = 'block';
-            
-            if (type === 'success') {
-                setTimeout(() => {
-                    statusDiv.style.display = 'none';
-                }, 5000);
-            }
+            setTimeout(() => {
+                statusDiv.className = '';
+                statusDiv.style.display = 'none';
+            }, 5000);
         }
     </script>
 </body>
