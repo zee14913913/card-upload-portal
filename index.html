@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Upload Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        select, input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Card Upload Portal</h1>
+        <form id="uploadForm">
+            <div class="form-group">
+                <label for="uploadType">Upload Type:</label>
+                <select id="uploadType" required>
+                    <option value="">Select Type</option>
+                    <option value="statement">Credit Card Statement</option>
+                    <option value="transaction">Single Transaction</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="clientName">Client Name:</label>
+                <input type="text" id="clientName" required placeholder="Enter client name">
+            </div>
+            
+            <div class="form-group" id="paymentByGroup" style="display:none">
+                <label for="paymentBy">Payment By:</label>
+                <select id="paymentBy">
+                    <option value="">Select Payment Method</option>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="fileInput">Upload File (PDF/JPG/PNG):</label>
+                <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" required>
+            </div>
+            
+            <button type="submit" id="submitBtn">Upload</button>
+        </form>
+        
+        <div id="status"></div>
+    </div>
+
+    <script>
+        const STATEMENT_WEBHOOK_URL = 'https://hook.us2.make.com/eok25ucrxrlx3tj82rby58dxxt10qo';
+        const TRANSACTION_WEBHOOK_URL = 'https://hook.us2.make.com/xxlrqohm3edmerdj znm1fc9pb49w';
+        
+        const uploadTypeSelect = document.getElementById('uploadType');
+        const paymentByGroup = document.getElementById('paymentByGroup');
+        const uploadForm = document.getElementById('uploadForm');
+        const statusDiv = document.getElementById('status');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        uploadTypeSelect.addEventListener('change', function() {
+            if (this.value === 'transaction') {
+                paymentByGroup.style.display = 'block';
+                document.getElementById('paymentBy').required = true;
+            } else {
+                paymentByGroup.style.display = 'none';
+                document.getElementById('paymentBy').required = false;
+            }
+        });
+        
+        uploadForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const uploadType = document.getElementById('uploadType').value;
+            const clientName = document.getElementById('clientName').value;
+            const paymentBy = document.getElementById('paymentBy').value;
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showStatus('Please select a file', 'error');
+                return;
+            }
+            
+            showStatus('Uploading...', 'info');
+            submitBtn.disabled = true;
+            
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('clientName', clientName);
+                
+                let webhookUrl;
+                if (uploadType === 'statement') {
+                    webhookUrl = STATEMENT_WEBHOOK_URL;
+                } else if (uploadType === 'transaction') {
+                    webhookUrl = TRANSACTION_WEBHOOK_URL;
+                    formData.append('recordType', 'transaction');
+                    formData.append('paymentBy', paymentBy);
+                }
+                
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    showStatus('Upload successful!', 'success');
+                    uploadForm.reset();
+                    paymentByGroup.style.display = 'none';
+                } else {
+                    showStatus('Upload failed: ' + response.statusText, 'error');
+                }
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+        
+        function showStatus(message, type) {
+            statusDiv.textContent = message;
+            statusDiv.className = type;
+            statusDiv.style.display = 'block';
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>
