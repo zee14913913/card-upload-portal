@@ -4,243 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Card Upload Portal</title>
+    <!-- 样式部分与之前相同，略。若你已有就保留原样 -->
+    <!-- 这里省略 CSS，如果你已经在用上一版 CSS，直接沿用即可 -->
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #2d3561 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        body::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, rgba(100, 150, 255, 0.15) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-        
-        body::after {
-            content: '';
-            position: absolute;
-            bottom: -30%;
-            left: -10%;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(150, 100, 255, 0.1) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-        
-        .container {
-            background: rgba(20, 25, 45, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 48px;
-            max-width: 520px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            position: relative;
-            z-index: 1;
-        }
-        
-        .logo {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 32px;
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-        }
-        
-        h1 {
-            color: #ffffff;
-            font-size: 32px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            letter-spacing: -0.5px;
-        }
-        
-        .subtitle {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 15px;
-            margin-bottom: 40px;
-        }
-        
-        .form-group {
-            margin-bottom: 24px;
-        }
-        
-        label {
-            display: block;
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 10px;
-            letter-spacing: 0.2px;
-        }
-        
-        select,
-        input[type="text"] {
-            width: 100%;
-            padding: 14px 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            color: #ffffff;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            outline: none;
-        }
-        
-        select:hover,
-        input[type="text"]:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-        
-        select:focus,
-        input[type="text"]:focus {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        select {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
-            padding-right: 40px;
-        }
-        
-        select option {
-            background: #1a1f3a;
-            color: #ffffff;
-        }
-        
-        input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-        }
-        
-        .file-upload {
-            position: relative;
-            display: block;
-        }
-        
-        .file-upload-label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 2px dashed rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 14px;
-        }
-        
-        .file-upload-label:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.3);
-            color: rgba(255, 255, 255, 0.8);
-        }
-        
-        .file-upload input[type="file"] {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-        
-        .file-name {
-            margin-top: 12px;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 13px;
-            text-align: center;
-        }
-        
-        button {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 32px;
-            letter-spacing: 0.3px;
-        }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.3);
-        }
-        
-        button:active {
-            transform: translateY(0);
-        }
-        
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        #status {
-            margin-top: 20px;
-            padding: 16px;
-            border-radius: 12px;
-            font-size: 14px;
-            text-align: center;
-            display: none;
-        }
-        
-        #status.success {
-            background: rgba(52, 211, 153, 0.1);
-            border: 1px solid rgba(52, 211, 153, 0.3);
-            color: #34d399;
-            display: block;
-        }
-        
-        #status.error {
-            background: rgba(248, 113, 113, 0.1);
-            border: 1px solid rgba(248, 113, 113, 0.3);
-            color: #f87171;
-            display: block;
-        }
+        /* ……此处保留你之前那整段 CSS 不变…… */
     </style>
 </head>
 <body>
@@ -293,10 +60,6 @@
     </div>
     
     <script>
-        // 使用你从 Make 拿到的准确 webhook URL
-        const STATEMENT_WEBHOOK_URL = 'https://hook.us2.make.com/eok25ucrxrlx3tj82rby58dxxt10qo';   // Scenario 1
-        const TRANSACTION_WEBHOOK_URL = 'https://hook.us2.make.com/xxlrqohm3edmerdjznm/1c9pb49w';    // Scenario 2
-        
         const uploadTypeSelect = document.getElementById('uploadType');
         const paymentByGroup = document.getElementById('paymentByGroup');
         const fileInput = document.getElementById('fileInput');
@@ -310,7 +73,6 @@
                 document.getElementById('paymentBy').required = true;
             } else {
                 paymentByGroup.style.display = 'none';
-                document.getElementById('paymentBy').required = false;
             }
         });
         
@@ -334,12 +96,10 @@
                 showStatus('Please select document type', 'error');
                 return;
             }
-            
             if (!file) {
                 showStatus('Please select a file', 'error');
                 return;
             }
-            
             if (uploadType === 'transaction' && !paymentBy) {
                 showStatus('Please select payment method', 'error');
                 return;
@@ -347,21 +107,20 @@
             
             const formData = new FormData();
             formData.append('file', file);
+            formData.append('uploadType', uploadType);
             formData.append('clientName', clientName);
-            
             if (uploadType === 'transaction') {
-                formData.append('recordType', 'transaction'); // 小写，方便在 Sheets 里统一
+                formData.append('recordType', 'transaction');
                 formData.append('paymentBy', paymentBy);
             }
-            
-            const webhookUrl = uploadType === 'statement' ? STATEMENT_WEBHOOK_URL : TRANSACTION_WEBHOOK_URL;
             
             const submitButton = form.querySelector('button[type="submit"]');
             submitButton.disabled = true;
             submitButton.textContent = 'Processing...';
             
             try {
-                const response = await fetch(webhookUrl, {
+                // 改成调用自己域名下的 API
+                const response = await fetch('/api/upload', {
                     method: 'POST',
                     body: formData
                 });
@@ -372,7 +131,8 @@
                     fileNameDisplay.textContent = '';
                     paymentByGroup.style.display = 'none';
                 } else {
-                    showStatus('Upload failed. Please try again.', 'error');
+                    const txt = await response.text();
+                    showStatus('Upload failed: ' + txt, 'error');
                 }
             } catch (error) {
                 showStatus('Network error. Please check your connection.', 'error');
@@ -394,4 +154,3 @@
     </script>
 </body>
 </html>
-
