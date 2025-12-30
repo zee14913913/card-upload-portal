@@ -130,7 +130,7 @@
         select {
             cursor: pointer;
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-image: url("image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 16px center;
             padding-right: 40px;
@@ -293,8 +293,9 @@
     </div>
     
     <script>
-        const STATEMENT_WEBHOOK_URL = 'https://hook.us2.make.com/eok25ucrxrlx3tj82rby58dxxt10qo';
-        const TRANSACTION_WEBHOOK_URL = 'https://hook.us2.make.com/xxlrqohm3edmerdj znm1fc9pb49w';
+        // 使用你从 Make 拿到的准确 webhook URL
+        const STATEMENT_WEBHOOK_URL = 'https://hook.us2.make.com/eok25ucrxrlx3tj82rby58dxxt10qo';   // Scenario 1
+        const TRANSACTION_WEBHOOK_URL = 'https://hook.us2.make.com/xxlrqohm3edmerdjznm/1c9pb49w';    // Scenario 2
         
         const uploadTypeSelect = document.getElementById('uploadType');
         const paymentByGroup = document.getElementById('paymentByGroup');
@@ -329,8 +330,18 @@
             const paymentBy = document.getElementById('paymentBy').value;
             const file = fileInput.files[0];
             
+            if (!uploadType) {
+                showStatus('Please select document type', 'error');
+                return;
+            }
+            
             if (!file) {
                 showStatus('Please select a file', 'error');
+                return;
+            }
+            
+            if (uploadType === 'transaction' && !paymentBy) {
+                showStatus('Please select payment method', 'error');
                 return;
             }
             
@@ -339,7 +350,7 @@
             formData.append('clientName', clientName);
             
             if (uploadType === 'transaction') {
-                formData.append('recordType', 'Transaction');
+                formData.append('recordType', 'transaction'); // 小写，方便在 Sheets 里统一
                 formData.append('paymentBy', paymentBy);
             }
             
@@ -352,7 +363,7 @@
             try {
                 const response = await fetch(webhookUrl, {
                     method: 'POST',
-                                        body: formData
+                    body: formData
                 });
                 
                 if (response.ok) {
@@ -374,6 +385,7 @@
         function showStatus(message, type) {
             statusDiv.textContent = message;
             statusDiv.className = type;
+            statusDiv.style.display = 'block';
             setTimeout(() => {
                 statusDiv.className = '';
                 statusDiv.style.display = 'none';
@@ -382,3 +394,4 @@
     </script>
 </body>
 </html>
+
